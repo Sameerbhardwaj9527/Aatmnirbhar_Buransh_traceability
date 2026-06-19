@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rooted · Buransh Squash · Batch Traceability</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --crimson:    #8B1A2B;
+      --crimson-d:  #5C0F1C;
+      --crimson-l:  #C4304A;
+      --blush:      #F5D6D9;
+      --blush-l:    #FBF0F1;
+      --petal:      #E8A0A9;
+      --gold:       #C9963A;
+      --gold-l:     #F0D79A;
+      --bark:       #3D2510;
+      --moss:       #3A5C35;
+      --cream:      #FAF6F0;
+      --warm-white: #FFFCF8;
+      --text-1:     #1A0A0D;
+      --text-2:     #5C3340;
+      --text-3:     #9A7A80;
+      --border:     rgba(139,26,43,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--text-1);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,246,240,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 0.5px solid var(--border);
+      padding: 0 1.5rem;
+      height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 600;
+      color: var(--crimson);
+      letter-spacing: 0.02em;
+    }
+    .logo span {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 400;
+      color: var(--text-3);
+      margin-left: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .nav-badge {
+      font-size: 10px; font-weight: 500;
+      padding: 4px 10px; border-radius: 999px;
+      background: var(--blush);
+      color: var(--crimson);
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      background: linear-gradient(160deg, var(--crimson-d) 0%, var(--crimson) 55%, #A82038 100%);
+      padding: 5rem 1.5rem 4rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero-petals {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .hero-petals svg {
+      position: absolute; opacity: 0.08;
+    }
+    .hero-eyebrow {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--petal); margin-bottom: 1.25rem;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after {
+      content: ''; width: 32px; height: 0.5px; background: var(--petal); opacity: 0.6;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(38px, 7vw, 64px);
+      font-weight: 500; line-height: 1.1;
+      color: var(--warm-white);
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.01em;
+    }
+    .hero h1 em { font-style: italic; color: var(--gold-l); }
+    .hero-sub {
+      font-size: 15px; color: rgba(255,240,240,0.75);
+      line-height: 1.7; max-width: 480px; margin: 0 auto 2.5rem;
+    }
+
+    /* Petal decoration in hero */
+    .petal-row {
+      display: flex; justify-content: center; gap: 6px;
+      margin-bottom: 2.5rem;
+    }
+    .petal-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--petal); opacity: 0.5;
+    }
+    .petal-dot.big { width: 10px; height: 10px; opacity: 0.8; }
+
+    /* ─── BATCH SELECTOR ─── */
+    .batch-section {
+      max-width: 760px; margin: 0 auto;
+      padding: 2.5rem 1.25rem 0;
+    }
+    .section-label {
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-3); text-align: center; margin-bottom: 1rem;
+    }
+    .batch-strip {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+    .batch-btn {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 10px 20px; border-radius: 10px;
+      border: 0.5px solid var(--border);
+      background: var(--warm-white);
+      cursor: pointer; transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .batch-btn:hover { border-color: var(--crimson-l); transform: translateY(-1px); }
+    .batch-btn.active {
+      background: var(--crimson); border-color: var(--crimson);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(139,26,43,0.25);
+    }
+    .btn-batch-num {
+      font-size: 13px; font-weight: 500; letter-spacing: 0.04em;
+      color: var(--text-2); transition: color 0.2s;
+    }
+    .batch-btn.active .btn-batch-num { color: var(--blush-l); }
+    .btn-farmer-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px; color: var(--text-3); margin-top: 2px; transition: color 0.2s;
+    }
+    .batch-btn.active .btn-farmer-name { color: var(--petal); }
+
+    /* ─── FARMER CARD ─── */
+    .main-content { max-width: 760px; margin: 0 auto; padding: 0 1.25rem 4rem; }
+
+    .farmer-card {
+      background: var(--warm-white);
+      border: 0.5px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 2px 40px rgba(139,26,43,0.06);
+    }
+
+    /* Card hero */
+    .card-hero {
+      background: linear-gradient(135deg, var(--crimson-d) 0%, var(--crimson) 100%);
+      padding: 2rem 1.75rem 1.75rem;
+      position: relative; overflow: hidden;
+    }
+    .card-hero-bg {
+      position: absolute; right: -20px; top: -20px;
+      width: 160px; height: 160px;
+      opacity: 0.06; pointer-events: none;
+    }
+    .card-hero-top {
+      display: flex; align-items: flex-start; gap: 1.25rem;
+    }
+    .avatar {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 500; color: var(--blush-l);
+      flex-shrink: 0;
+    }
+    .farmer-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 500;
+      color: var(--warm-white); line-height: 1.2; margin-bottom: 5px;
+    }
+    .farmer-loc {
+      font-size: 13px; color: var(--petal);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .batch-pill {
+      display: inline-block; margin-top: 1rem;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      background: rgba(255,255,255,0.12);
+      color: var(--blush-l); padding: 4px 12px; border-radius: 999px;
+      border: 0.5px solid rgba(255,255,255,0.2);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex; border-bottom: 0.5px solid var(--border);
+      padding: 0 1.75rem;
+      background: var(--warm-white);
+      overflow-x: auto;
+    }
+    .tab-btn {
+      font-family: inherit; font-size: 13px; font-weight: 500;
+      color: var(--text-3);
+      padding: 14px 16px;
+      border: none; border-bottom: 2px solid transparent;
+      background: none; cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .tab-btn:hover { color: var(--crimson); }
+    .tab-btn.active { color: var(--crimson); border-bottom-color: var(--crimson); }
+
+    /* Tab panels */
+    .tab-panel { display: none; padding: 1.75rem; }
+    .tab-panel.active { display: block; }
+
+    /* ── PROVENANCE panel ── */
+    .info-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin-bottom: 1.5rem;
+    }
+    .info-cell {
+      background: var(--blush-l); border-radius: 10px;
+      padding: 0.875rem 1rem; border: 0.5px solid var(--border);
+    }
+    .info-label {
+      font-size: 10px; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 5px;
+    }
+    .info-val { font-size: 15px; color: var(--text-1); font-weight: 500; }
+
+    .divider { height: 0.5px; background: var(--border); margin: 1.25rem 0; }
+
+    .gps-row {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    }
+    .gps-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+    .gps-val { font-size: 13px; color: var(--text-2); font-family: 'Courier New', monospace; }
+    .map-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-family: inherit; font-weight: 500;
+      color: var(--crimson); border: 0.5px solid var(--crimson-l);
+      border-radius: 8px; padding: 7px 14px;
+      cursor: pointer; background: transparent; text-decoration: none;
+      transition: background 0.15s;
+    }
+    .map-btn:hover { background: var(--blush); }
+
+    .story-block {
+      border-left: 2px solid var(--petal);
+      padding-left: 1rem; margin-top: 1.5rem;
+    }
+    .story-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px; color: var(--text-2); line-height: 1.8; font-style: italic;
+    }
+
+    .badge-row { margin-top: 1.25rem; display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 500; padding: 5px 12px;
+      border-radius: 999px; letter-spacing: 0.04em;
+    }
+    .badge-available { background: #E6F4EA; color: var(--moss); }
+    .badge-closed { background: var(--blush-l); color: var(--text-3); border: 0.5px solid var(--border); }
+    .badge-organic { background: var(--gold-l); color: var(--bark); }
+
+    /* ── PROCESS panel ── */
+    .process-intro {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px; color: var(--text-2); line-height: 1.8;
+      font-style: italic; margin-bottom: 2rem;
+    }
+
+    .process-steps { display: flex; flex-direction: column; gap: 0; }
+
+    .process-step {
+      display: flex; gap: 1.25rem;
+      cursor: pointer; position: relative;
+    }
+    .step-spine {
+      display: flex; flex-direction: column; align-items: center; flex-shrink: 0;
+    }
+    .step-dot {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--blush-l); border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; transition: all 0.2s; flex-shrink: 0;
+      position: relative; z-index: 1;
+    }
+    .step-line {
+      width: 1.5px; flex: 1; min-height: 20px;
+      background: linear-gradient(to bottom, var(--border), transparent);
+      margin: 4px 0;
+    }
+    .process-step:last-child .step-line { display: none; }
+
+    .step-body { padding-bottom: 1.75rem; flex: 1; }
+    .step-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0 0; margin-bottom: 0;
+    }
+    .step-title {
+      font-size: 15px; font-weight: 500; color: var(--text-1);
+    }
+    .step-season {
+      font-size: 11px; color: var(--text-3);
+      background: var(--blush-l); padding: 2px 8px; border-radius: 999px;
+      border: 0.5px solid var(--border); letter-spacing: 0.04em;
+    }
+    .step-content {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.35s ease, opacity 0.25s ease;
+      opacity: 0;
+    }
+    .step-content.open { max-height: 400px; opacity: 1; }
+    .step-desc {
+      font-size: 14px; color: var(--text-2); line-height: 1.75;
+      padding: 0.75rem 0 0.25rem;
+    }
+    .step-detail-pills {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-top: 0.75rem;
+    }
+    .step-pill {
+      font-size: 11px; padding: 3px 10px; border-radius: 999px;
+      background: var(--blush); color: var(--crimson);
+      border: 0.5px solid rgba(139,26,43,0.2);
+    }
+    .step-chevron {
+      margin-left: auto; color: var(--text-3);
+      transition: transform 0.25s; flex-shrink: 0;
+    }
+    .process-step.open .step-chevron { transform: rotate(180deg); }
+    .process-step.open .step-dot {
+      background: var(--crimson); border-color: var(--crimson);
+      box-shadow: 0 0 0 4px rgba(139,26,43,0.1);
+    }
+
+    /* ── NUTRITION panel ── */
+    .nutrition-header {
+      background: linear-gradient(135deg, var(--blush-l), var(--cream));
+      border-radius: 12px; padding: 1.25rem;
+      margin-bottom: 1.5rem; border: 0.5px solid var(--border);
+      text-align: center;
+    }
+    .nutrition-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 500; color: var(--text-1); margin-bottom: 4px;
+    }
+    .nutrition-sub { font-size: 12px; color: var(--text-3); }
+
+    .nutrient-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .nutrient-cell {
+      background: var(--warm-white); border-radius: 10px;
+      border: 0.5px solid var(--border); padding: 1rem 0.75rem;
+      text-align: center; transition: all 0.2s;
+      cursor: default;
+    }
+    .nutrient-cell:hover { border-color: var(--crimson-l); transform: translateY(-2px); }
+    .nutrient-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 600; color: var(--crimson); line-height: 1;
+      margin-bottom: 4px;
+    }
+    .nutrient-unit { font-size: 11px; color: var(--text-3); margin-bottom: 3px; }
+    .nutrient-name { font-size: 12px; color: var(--text-2); font-weight: 500; }
+
+    .benefits-title {
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-3); margin-bottom: 1rem;
+    }
+    .benefits-list { display: flex; flex-direction: column; gap: 10px; }
+    .benefit-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--blush-l); border-radius: 10px;
+      padding: 0.875rem 1rem; border: 0.5px solid var(--border);
+    }
+    .benefit-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .benefit-text-wrap {}
+    .benefit-name { font-size: 14px; font-weight: 500; color: var(--text-1); margin-bottom: 2px; }
+    .benefit-desc { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+    /* ── CONTACT panel ── */
+    .contact-wrap { display: flex; flex-direction: column; gap: 12px; }
+    .contact-card {
+      display: flex; align-items: center; gap: 1rem;
+      background: var(--blush-l); border-radius: 12px; padding: 1rem 1.25rem;
+      border: 0.5px solid var(--border); text-decoration: none;
+      transition: all 0.15s;
+    }
+    .contact-card:hover { border-color: var(--crimson-l); transform: translateX(3px); }
+    .contact-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--crimson); display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0;
+    }
+    .contact-label { font-size: 11px; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px; }
+    .contact-val { font-size: 15px; font-weight: 500; color: var(--text-1); }
+    .contact-arrow { margin-left: auto; color: var(--text-3); }
+
+    .society-block {
+      background: linear-gradient(135deg, var(--crimson-d), var(--crimson));
+      border-radius: 12px; padding: 1.5rem; margin-top: 0.5rem;
+      text-align: center;
+    }
+    .society-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 500; color: var(--warm-white); margin-bottom: 6px;
+    }
+    .society-desc { font-size: 13px; color: var(--petal); line-height: 1.6; margin-bottom: 1rem; }
+    .society-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 500; color: var(--gold-l);
+      border: 0.5px solid rgba(201,150,58,0.4); border-radius: 8px;
+      padding: 7px 16px; text-decoration: none;
+      transition: background 0.15s;
+    }
+    .society-link:hover { background: rgba(255,255,255,0.08); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center; padding: 2rem 1rem;
+      font-size: 12px; color: var(--text-3);
+      border-top: 0.5px solid var(--border);
+      line-height: 1.8;
+    }
+    footer a { color: var(--crimson); text-decoration: none; }
+
+    /* ─── Buransh flower SVG for decorations ─── */
+    .flower-svg { display: block; }
+
+    @media (max-width: 500px) {
+      .info-grid { grid-template-columns: 1fr; }
+      .nutrient-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero h1 { font-size: 34px; }
+      .batch-btn { padding: 8px 14px; }
+      .tabs { padding: 0 1rem; }
+      .tab-panel { padding: 1.25rem; }
+      .card-hero { padding: 1.5rem 1.25rem 1.25rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Rooted <span>by AatmaNirbhar</span></div>
+  <span class="nav-badge">Batch Trace</span>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-petals">
+    <!-- floating petal shapes -->
+    <svg style="width:200px;height:200px;top:-40px;left:-30px" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(0 100 100)"/>
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(72 100 100)"/>
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(144 100 100)"/>
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(216 100 100)"/>
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(288 100 100)"/>
+    </svg>
+    <svg style="width:140px;height:140px;bottom:-30px;right:5%;opacity:0.06" viewBox="0 0 200 200" fill="none">
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(0 100 100)"/>
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(72 100 100)"/>
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(144 100 100)"/>
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(216 100 100)"/>
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(288 100 100)"/>
+    </svg>
+    <svg style="width:80px;height:80px;top:20%;right:10%;opacity:0.05" viewBox="0 0 200 200" fill="none">
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(36 100 100)"/>
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(108 100 100)"/>
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(180 100 100)"/>
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(252 100 100)"/>
+      <ellipse cx="100" cy="100" rx="60" ry="100" fill="#fff" transform="rotate(324 100 100)"/>
+    </svg>
+  </div>
+
+  <div class="hero-eyebrow">Uttarakhand · Rhododendron Arboreum</div>
+  <h1>The <em>Buransh</em> Story</h1>
+  <p class="hero-sub">Hand-harvested from the Himalayan hillsides of Uttarkashi and Tehri Garhwal, pressed into every bottle of Rooted Buransh Squash.</p>
+  <div class="petal-row">
+    <div class="petal-dot"></div>
+    <div class="petal-dot big"></div>
+    <div class="petal-dot big" style="background:var(--gold-l)"></div>
+    <div class="petal-dot big"></div>
+    <div class="petal-dot"></div>
+  </div>
+</div>
+
+<!-- BATCH SELECTOR -->
+<div class="batch-section">
+  <p class="section-label">Select a batch to trace</p>
+  <div class="batch-strip" id="batchStrip"></div>
+</div>
+
+<!-- MAIN CARD -->
+<div class="main-content">
+  <div class="farmer-card" id="farmerCard"></div>
+  <p style="font-size:11px;color:var(--text-3);text-align:center;margin-top:1.25rem;letter-spacing:0.04em" id="batchMeta"></p>
+</div>
+
+<footer>
+  AatmaNirbhar Society · Yamuna Valley, Uttarakhand<br>
+  <a href="mailto:aatmanirbharsociety@example.com">aatmanirbharsociety@example.com</a>
+  &nbsp;·&nbsp; <a href="#">rooted.in</a>
+</footer>
+
+<script>
+const farmers = [
+  {
+    batch: "BS-001",
+    name: "Hemlata Parmar",
+    village: "Tunalaka",
+    district: "Uttarkashi",
+    tehsil: "Barkot",
+    postOffice: "Bhatiya",
+    pincode: "249171",
+    state: "Uttarakhand",
+    harvest: "Feb – Apr",
+    altitude: "~2,100 m",
+    lat: 30.7924, lng: 78.2458,
+    initials: "HP",
+    story: "Hemlata has been tending wild Buransh trees on the hillsides above Tunalaka for over a decade. She harvests each bloom by hand at first light, when the flowers are at peak colour and sweetness.",
+    available: true,
+    yearsWithSociety: 4,
+    plotSize: "~0.8 acres",
+    method: "Hand-picked, shade-dried"
+  },
+  {
+    batch: "BS-002",
+    name: "Lokender Rana",
+    village: "Kanseru",
+    district: "Uttarkashi",
+    tehsil: "Barkot",
+    postOffice: "Barkot",
+    pincode: "249141",
+    state: "Uttarakhand",
+    harvest: "Feb – Apr",
+    altitude: "~1,950 m",
+    lat: 30.8136, lng: 78.2011,
+    initials: "LR",
+    story: "Lokender grows Buransh alongside his apple orchard in Kanseru. He was among the first farmers in the valley to partner with AatmaNirbhar Society, bringing traditional knowledge to modern traceability.",
+    available: true,
+    yearsWithSociety: 6,
+    plotSize: "~1.2 acres",
+    method: "Early morning harvest, no chemicals"
+  },
+  {
+    batch: "BS-003",
+    name: "Yogesh Bandhani",
+    village: "Kotiyalgaon",
+    district: "Uttarkashi",
+    tehsil: "Barkot",
+    postOffice: "Naugaon",
+    pincode: "249171",
+    state: "Uttarakhand",
+    harvest: "Feb – Apr",
+    altitude: "~2,300 m",
+    lat: 30.7699, lng: 78.2744,
+    initials: "YB",
+    story: "Yogesh's family has lived in Kotiyalgaon for four generations. He practises zero-chemical harvesting and sun-dries the petals before pressing — a method passed down through the family.",
+    available: false,
+    yearsWithSociety: 3,
+    plotSize: "~0.6 acres",
+    method: "Traditional sun-drying of petals"
+  },
+  {
+    batch: "BS-004",
+    name: "Shubham Nautiyal",
+    village: "Marod Nainbagh",
+    district: "Tehri Garhwal",
+    tehsil: "Nainbagh",
+    postOffice: "Marod",
+    pincode: "249186",
+    state: "Uttarakhand",
+    harvest: "Feb – Apr",
+    altitude: "~1,800 m",
+    lat: 30.5562, lng: 78.3097,
+    initials: "SN",
+    story: "Shubham is the youngest farmer in the collective, introducing careful record-keeping and GPS-tagged harvest plots. His Marod batch is known for its deep ruby colour and floral intensity.",
+    available: true,
+    yearsWithSociety: 2,
+    plotSize: "~1.0 acres",
+    method: "GPS-tagged plots, digital records"
+  }
+];
+
+const processSteps = [
+  {
+    emoji: "🌸",
+    title: "Bloom Identification",
+    season: "Jan – Feb",
+    desc: "As winter retreats from the Himalayas, Buransh trees (Rhododendron arboreum) burst into deep red clusters. Farmers walk their plots daily to track which trees are at peak bloom — judging by petal firmness, fragrance intensity, and colour depth.",
+    pills: ["Rhododendron arboreum", "Altitude 1,800–2,300 m", "No chemicals used"]
+  },
+  {
+    emoji: "🤲",
+    title: "Hand Harvesting",
+    season: "Feb – Apr",
+    desc: "Petals are plucked by hand at dawn, when the moisture content is highest and the natural sugars are concentrated. Only the innermost, fully-opened petals are taken — outer bracts and stamens are left on the tree to protect next season's growth.",
+    pills: ["Dawn harvesting", "Selective plucking", "Hand-sorted on site"]
+  },
+  {
+    emoji: "🌬️",
+    title: "Shade Drying",
+    season: "Same day",
+    desc: "Freshly picked petals are spread thin on clean jute mats and moved into shade immediately to prevent colour loss. Drying takes 12–18 hours with periodic turning. Direct sunlight is avoided — it degrades the anthocyanins that give the squash its ruby hue.",
+    pills: ["Jute mats", "12–18 hr shade dry", "No heat applied"]
+  },
+  {
+    emoji: "⚖️",
+    title: "Weighing & Batch Tagging",
+    season: "Post-drying",
+    desc: "Each farmer's dried petal lot is weighed, logged with a batch number, and tagged with harvest date, GPS coordinates, and the farmer's name. This data seeds the QR traceability record that stays with every bottle from this batch.",
+    pills: ["Batch ID assigned", "GPS-tagged", "Farmer record signed"]
+  },
+  {
+    emoji: "🫙",
+    title: "Extraction & Pressing",
+    season: "Processing unit",
+    desc: "Dried petals are cold-pressed with filtered spring water at AatmaNirbhar Society's processing unit. The resulting concentrate is gently strained, retaining the natural tannins and anthocyanins. No artificial colours, flavours, or preservatives are added at any stage.",
+    pills: ["Cold pressed", "Spring water", "No preservatives", "No artificial colour"]
+  },
+  {
+    emoji: "🍶",
+    title: "Squash Bottling",
+    season: "Apr – May",
+    desc: "The Buransh concentrate is blended with natural cane sugar and a touch of Himalayan lemon juice for balance. The final squash is bottled in glass, sealed, and labelled with the batch number linking each bottle back to the individual farmer's field.",
+    pills: ["Natural cane sugar", "Glass bottles", "Batch QR on label"]
+  }
+];
+
+const nutrition = [
+  { val: "42", unit: "kcal / 100ml", name: "Energy" },
+  { val: "0", unit: "g fat", name: "Total Fat" },
+  { val: "9.8", unit: "g / 100ml", name: "Carbohydrates" },
+  { val: "3.2", unit: "mg / 100ml", name: "Vitamin C" },
+  { val: "High", unit: "anthocyanins", name: "Antioxidants" },
+  { val: "0", unit: "additives", name: "Preservatives" }
+];
+
+const benefits = [
+  { icon: "❤️", name: "Heart health", desc: "Anthocyanins in Buransh have been studied for their role in reducing blood pressure and oxidative stress." },
+  { icon: "🛡️", name: "Immune support", desc: "Rich in Vitamin C and polyphenols that support the body's natural defences, especially through winter and spring transitions." },
+  { icon: "🧊", name: "Cooling effect", desc: "Traditionally consumed in Uttarakhand as a summer cooler — diluted with cold water, it lowers body heat and aids hydration." },
+  { icon: "🌿", name: "Zero synthetic inputs", desc: "Grown and harvested with no pesticides, herbicides, or synthetic fertilisers. Certified by AatmaNirbhar Society." }
+];
+
+let activeIdx = 0;
+let activeTab = 'provenance';
+let openStep = null;
+
+function getBatchFromURL() {
+  const p = new URLSearchParams(window.location.search);
+  const b = p.get('batch');
+  if (b) { const i = farmers.findIndex(f => f.batch === b); if (i !== -1) return i; }
+  return 0;
+}
+
+function render(i) {
+  activeIdx = i;
+  const f = farmers[i];
+
+  const url = new URL(window.location);
+  url.searchParams.set('batch', f.batch);
+  history.replaceState(null, '', url);
+  document.title = `${f.batch} · ${f.name} · Rooted`;
+
+  document.querySelectorAll('.batch-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
+
+  const mapsUrl = `https://maps.google.com/?q=${f.lat},${f.lng}`;
+
+  document.getElementById('farmerCard').innerHTML = `
+    <div class="card-hero">
+      <svg class="card-hero-bg" viewBox="0 0 200 200" fill="none">
+        <ellipse cx="100" cy="100" rx="60" ry="100" fill="white" transform="rotate(0 100 100)"/>
+        <ellipse cx="100" cy="100" rx="60" ry="100" fill="white" transform="rotate(72 100 100)"/>
+        <ellipse cx="100" cy="100" rx="60" ry="100" fill="white" transform="rotate(144 100 100)"/>
+        <ellipse cx="100" cy="100" rx="60" ry="100" fill="white" transform="rotate(216 100 100)"/>
+        <ellipse cx="100" cy="100" rx="60" ry="100" fill="white" transform="rotate(288 100 100)"/>
+      </svg>
+      <div class="card-hero-top">
+        <div class="avatar">${f.initials}</div>
+        <div>
+          <div class="farmer-name">${f.name}</div>
+          <div class="farmer-loc">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${f.village}, ${f.district}
+          </div>
+        </div>
+      </div>
+      <span class="batch-pill">${f.batch} · ${f.altitude}</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('provenance')">Provenance</button>
+      <button class="tab-btn" onclick="switchTab('process')">How it's made</button>
+      <button class="tab-btn" onclick="switchTab('nutrition')">Nutrition</button>
+      <button class="tab-btn" onclick="switchTab('contact')">Contact</button>
+    </div>
+
+    <div id="panel-provenance" class="tab-panel active">
+      <div class="info-grid">
+        <div class="info-cell">
+          <div class="info-label">Batch number</div>
+          <div class="info-val">${f.batch}</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-label">Harvest season</div>
+          <div class="info-val">${f.harvest}</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-label">Altitude</div>
+          <div class="info-val">${f.altitude}</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-label">Tehsil · Pin</div>
+          <div class="info-val">${f.tehsil} · ${f.pincode}</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-label">Harvest method</div>
+          <div class="info-val">${f.method}</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-label">With AatmaNirbhar</div>
+          <div class="info-val">${f.yearsWithSociety} years</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="gps-row">
+        <div>
+          <div class="gps-label">GPS coordinates</div>
+          <div class="gps-val">${f.lat}° N, ${f.lng}° E</div>
+        </div>
+        <a class="map-btn" href="${mapsUrl}" target="_blank" rel="noopener">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          View on map
+        </a>
+      </div>
+
+      <div class="story-block">
+        <p class="story-text">${f.story}</p>
+      </div>
+
+      <div class="badge-row">
+        <span class="badge ${f.available ? 'badge-available' : 'badge-closed'}">
+          ${f.available ? '✓ Stock available' : '⏱ Season closed'}
+        </span>
+        <span class="badge badge-organic">🌿 Zero chemicals</span>
+        <span class="badge" style="background:var(--blush);color:var(--crimson);border:0.5px solid rgba(139,26,43,0.2)">📐 ${f.plotSize}</span>
+      </div>
+    </div>
+
+    <div id="panel-process" class="tab-panel">
+      <p class="process-intro">From petal to bottle — every step is done by hand, with no shortcuts and no synthetic inputs.</p>
+      <div class="process-steps" id="processSteps"></div>
+    </div>
+
+    <div id="panel-nutrition" class="tab-panel">
+      <div class="nutrition-header">
+        <div class="nutrition-title">Buransh Squash — Nutrition</div>
+        <div class="nutrition-sub">Per 100ml serving (dilute 1:5 with water). Values are approximate.</div>
+      </div>
+      <div class="nutrient-grid">
+        ${nutrition.map(n => `
+          <div class="nutrient-cell">
+            <div class="nutrient-val">${n.val}</div>
+            <div class="nutrient-unit">${n.unit}</div>
+            <div class="nutrient-name">${n.name}</div>
+          </div>
+        `).join('')}
+      </div>
+      <p class="benefits-title">Why Buransh?</p>
+      <div class="benefits-list">
+        ${benefits.map(b => `
+          <div class="benefit-item">
+            <div class="benefit-icon">${b.icon}</div>
+            <div class="benefit-text-wrap">
+              <div class="benefit-name">${b.name}</div>
+              <div class="benefit-desc">${b.desc}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div id="panel-contact" class="tab-panel">
+      <div class="contact-wrap">
+        <a class="contact-card" href="https://wa.me/919999999999" target="_blank" rel="noopener">
+          <div class="contact-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.099 1.507 5.829L.057 23.09c-.073.294.029.601.261.782.154.12.342.18.531.18.089 0 .179-.015.265-.044l5.455-1.849C8.02 23.013 9.977 23.5 12 23.5c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.5c-1.872 0-3.668-.5-5.224-1.448l-.374-.222-3.881 1.316 1.131-3.765-.243-.385C2.483 15.527 2 13.82 2 12 2 6.478 6.478 2 12 2s10 4.478 10 10-4.478 10-10 10z"/></svg>
+          </div>
+          <div>
+            <div class="contact-label">WhatsApp orders</div>
+            <div class="contact-val">+91 99999 99999</div>
+          </div>
+          <svg class="contact-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+
+        <a class="contact-card" href="mailto:aatmanirbharsociety@example.com">
+          <div class="contact-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-val">aatmanirbharsociety@example.com</div>
+          </div>
+          <svg class="contact-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+
+        <a class="contact-card" href="tel:+919999999999">
+          <div class="contact-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.4 2 2 0 0 1 3.59 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6 6l1.06-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div>
+            <div class="contact-label">Call us</div>
+            <div class="contact-val">+91 99999 99999</div>
+          </div>
+          <svg class="contact-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+
+        <div class="society-block">
+          <div class="society-name">AatmaNirbhar Society</div>
+          <div class="society-desc">A women-led agricultural collective from the Yamuna Valley, Uttarakhand — building livelihoods through native herbs and forest produce.</div>
+          <a class="society-link" href="#">Visit our website →</a>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Render process steps
+  const stepsEl = document.getElementById('processSteps');
+  if (stepsEl) {
+    stepsEl.innerHTML = processSteps.map((s, i) => `
+      <div class="process-step" id="step-${i}" onclick="toggleStep(${i})">
+        <div class="step-spine">
+          <div class="step-dot">${s.emoji}</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-header">
+            <div class="step-title">${s.title}</div>
+            <span class="step-season">${s.season}</span>
+            <svg class="step-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="step-content" id="step-content-${i}">
+            <div class="step-desc">${s.desc}</div>
+            <div class="step-detail-pills">${s.pills.map(p => `<span class="step-pill">${p}</span>`).join('')}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    openStep = null;
+  }
+
+  // apply active tab styling
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const tabNames = ['provenance','process','nutrition','contact'];
+  const activeTabIdx = tabNames.indexOf(activeTab);
+  if (activeTabIdx !== -1) {
+    document.querySelectorAll('.tab-btn')[activeTabIdx]?.classList.add('active');
+    document.getElementById('panel-' + activeTab)?.classList.add('active');
+  }
+
+  document.getElementById('batchMeta').textContent =
+    `${f.batch} · ${f.village}, ${f.state} · AatmaNirbhar Society`;
+}
+
+function switchTab(name) {
+  activeTab = name;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('panel-' + name)?.classList.add('active');
+}
+
+function toggleStep(i) {
+  const content = document.getElementById('step-content-' + i);
+  const step = document.getElementById('step-' + i);
+  if (!content || !step) return;
+
+  if (openStep !== null && openStep !== i) {
+    const prev = document.getElementById('step-content-' + openStep);
+    const prevStep = document.getElementById('step-' + openStep);
+    prev?.classList.remove('open');
+    prevStep?.classList.remove('open');
+  }
+
+  const isOpen = content.classList.contains('open');
+  content.classList.toggle('open', !isOpen);
+  step.classList.toggle('open', !isOpen);
+  openStep = isOpen ? null : i;
+}
+
+// Build batch buttons
+const strip = document.getElementById('batchStrip');
+farmers.forEach((f, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'batch-btn';
+  btn.innerHTML = `<span class="btn-batch-num">${f.batch}</span><span class="btn-farmer-name">${f.name.split(' ')[0]}</span>`;
+  btn.setAttribute('aria-label', `View batch ${f.batch} — ${f.name}`);
+  btn.onclick = () => render(i);
+  strip.appendChild(btn);
+});
+
+render(getBatchFromURL());
+</script>
+</body>
+</html>
